@@ -1,0 +1,49 @@
+Задание
+
+• Используя команду cat, создать два файла с данными, а затем объединить их.
+Просмотреть содержимое созданного файла.
+Переименовать файл, дав ему новое имя.
+cat > file1
+cat > file2
+cat file1 file2 > last_file
+cat last_file
+mv /home/dedis/gb_linux/homework/homework2/last_file /home/dedis/gb_linux/homework/homework2/final_file
+
+• Создать несколько файлов.
+Создать директорию, переместить файл туда.
+Удалить все созданные в этом и предыдущем задании директории и файлы.
+touch first_file second_file
+mkdir dir1
+mv first_file second_file dir1
+rm -r *
+
+• Создать файл file1 и наполнить его произвольным содержимым.
+Скопировать его в file2.
+Создать символическую ссылку file3 на file1.
+Создать жёсткую ссылку file4 на file1.
+Посмотреть, какие айноды у файлов.
+Удалить file1.
+cat > file1
+cp file1 file2
+ln -s file1 file3
+ln file1 file4
+ls -lih
+rm file1
+
+Что стало с остальными созданными файлами?
+file3 не будет работать, т.к мы удалили файл на который он ссылался(сылка будет битой)
+file4 а жетская ссылка, будет ссылаться на айноду file1,
+то есть данные которые были в file4 останутся, а в file3 нет
+
+Попробовать вывести их на экран.
+ls -lih
+
+• Дать созданным файлам другие, произвольные имена.
+Создать новую символическую ссылку.
+Переместить ссылки в другую директорию.
+mv /home/dedis/gb_linux/homework/homework2/file2 /home/dedis/gb_linux/homework/homework2/rename_file2
+mv /home/dedis/gb_linux/homework/homework2/file3 /home/dedis/gb_linux/homework/homework2/rename_file3
+mv /home/dedis/gb_linux/homework/homework2/file4 /home/dedis/gb_linux/homework/homework2/rename_file4
+ln -s rename_file2 link_file2
+mkdir dir1
+mv rename_file2 rename_file3 rename_file4 link_file2 dir1
