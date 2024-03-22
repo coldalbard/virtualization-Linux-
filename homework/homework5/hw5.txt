@@ -1,0 +1,47 @@
+Задание
+
+• Настроить статическую конфигурацию (без DHCP) в Ubuntu через ip и netplan.
+sudo nano /etc/netplan/01-network-manager-all.yaml
+
+Настроить IP, маршрут по умолчанию и DNS-сервера (1.1.1.1 и 8.8.8.8).
+network:
+  version: 2
+  renderer: NetworkManager
+  ethernets:
+    enp0s3:
+      dhcp4: no
+      addresses: [192.168.1.77/24]
+      routes:
+        - to: default
+          via: 192.168.1.1
+      nameservers:
+        addresses:
+          - 1.1.1.1
+          - 8.8.8.8
+Проверить работоспособность сети.
+sudo netplan try
+ping google.com
+
+• Настроить правила iptables для доступности сервисов на TCP-портах 22, 80 и 443.
+sudo iptables -A INPUT -p tcp --dport=22 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport=80 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport=443 -j ACCEPT
+
+Также сервер должен иметь возможность устанавливать подключения к серверу обновлений.
+sudo iptables -I INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+sudo iptables -A INPUT -i lo -j ACCEPT
+sudo iptables -A INPUT -p icmp -j ACCEPT
+
+Остальные подключения запретить.
+sudo iptables -P INPUT DROP
+
+• Запретить любой входящий трафик с IP 3.4.5.6.
+sudo iptables -I INPUT -s 3.4.5.6 -j DROP
+
+•* Запросы на порт 8090 перенаправлять на порт 80 (на этом же сервере).
+sudo iptables -t nat -A PREROUTING -p tcp --dport=8090 -j REDIRECT --to-port 80
+
+•* Разрешить подключение по SSH только из сети 192.168.0.0/24.
+sudo iptables -A INPUT -p tcp --dport=22 --source 192.168.0.0/24 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 22 -j DROP
+sudo iptables -D INPUT 3
