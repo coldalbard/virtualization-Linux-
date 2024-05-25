@@ -1,0 +1,65 @@
+Задание
+• Написать скрипт очистки директорий.
+На вход принимает путь к директории.
+Если директория существует, то удаляет в ней все файлы с расширениями .bak, .tmp, .backup.
+Если директории нет, то выводит ошибку.
+
+
+#!/usr/bin/bash
+
+
+read -p "Enter the path to the folder you want to clear: " folder_name
+
+
+if [[ -e $folder_name && -d $folder_name ]];
+        then
+        echo "The specified folder was found"
+        cd $folder_name
+        rm -r *.bak *.tmp *.backup
+        echo "The folder was cleared successfully" 
+
+else
+        echo "The specified folder was not found"
+        exit 1
+fi
+
+
+• Создать скрипт ownersort.sh, который в заданной папке копирует файлы в директории, названные по имени владельца каждого файла.
+Учтите, что файл должен принадлежать соответствующему владельцу.
+
+#!/usr/bin/bash
+
+
+read -p "Enter the path to the folder where you want to sort: " folder_name
+
+
+if [[ -e $folder_name && -d $folder_name ]];
+        then
+        echo "The specified folder was found"
+        cd $folder_name
+        dir=$(ls -l | tr -s ' ' '\t' | cut -f '3' | sort -u)
+        for i in $dir;
+		do
+                mkdir -p $i
+        done
+
+
+        for file in "$folder_name"/*
+        do
+                if [ -d "$file" ];then
+                        continue
+                fi
+
+                if [ -e "$file" ];then
+                        owner=$(stat -c "%U" "$file")
+                        mv "$file" "$folder_name/$owner"/
+                fi
+        done
+	echo "sorting is done!"
+else
+        echo "The specified folder was not found"
+        exit 1
+fi
+
+
+
